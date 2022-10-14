@@ -9,7 +9,9 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 import configparser
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 LOG = create_logger(app)
@@ -18,8 +20,8 @@ LOG = create_logger(app)
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-channel_access_token = config.get('line-bot', 'channel_access_token')
-channel_secret = config.get('line-bot', 'channel_secret')
+channel_access_token = os.getenv('CHANNEL_ACCESS_TOKEN')
+channel_secret = os.getenv('CHANNEL_SECRET')
 
 if channel_secret is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
@@ -31,9 +33,8 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
+
 # 所有line傳來的事件都會經過此路徑，接著將事件傳到下方的handler做處理
-
-
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
