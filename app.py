@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import os
 import sys
+from argparse import ArgumentParser
 from flask import Flask, request, abort
 from flask.logging import create_logger
 
@@ -35,6 +36,8 @@ handler = WebhookHandler(channel_secret)
 
 
 # 所有line傳來的事件都會經過此路徑，接著將事件傳到下方的handler做處理
+
+
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -69,4 +72,15 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    app.run()
+    arg_parser = ArgumentParser(
+        usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
+    )
+    # --- original code ---
+    # arg_parser.add_argument('-p', '--port', type=int, default=8000, help='port')
+    # arg_parser.add_argument('-d', '--debug', default=False, help='debug')
+    # options = arg_parser.parse_args()
+    # app.run(debug=options.debug, port=options.port)
+
+    # --- new code ---
+    http_port = int(os.environ.get("PORT", 8000))
+    app.run(host='0.0.0.0', port=http_port)
