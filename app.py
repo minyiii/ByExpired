@@ -1,25 +1,21 @@
 from __future__ import unicode_literals
+from datetime import date, datetime, timedelta
 import os
 import sys
 from argparse import ArgumentParser
 from flask import Flask, request, abort
-from flask.logging import create_logger
-
+from flask_sqlalchemy import SQLAlchemy
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-
-import configparser
 from dotenv import load_dotenv
 
 load_dotenv()
-
 app = Flask(__name__)
-LOG = create_logger(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URI')
+db = SQLAlchemy(app)
 
-# LINE 聊天機器人的基本資料
-config = configparser.ConfigParser()
-config.read('config.ini')
+from models import User, Alarm, Food
 
 channel_access_token = os.getenv('CHANNEL_ACCESS_TOKEN')
 channel_secret = os.getenv('CHANNEL_SECRET')
@@ -74,7 +70,6 @@ def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=f"Hi, {profile.display_name}, 你要{option_text}喔"))
-
 
 if __name__ == "__main__":
     arg_parser = ArgumentParser(
