@@ -6,7 +6,7 @@ from flask import Flask, request, abort
 from flask.logging import create_logger
 
 from linebot import LineBotApi, WebhookHandler
-from linebot.exceptions import InvalidSignatureError
+from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 import configparser
@@ -59,16 +59,21 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    text = event.message.text
-    if text == "新增品項":
+    try:
+        profile = line_bot_api.get_profile(event.source.user_id)
+    except LineBotApiError as e:
+        print("No profile.")
+
+    option_text = event.message.text
+    if option_text == "新增品項":
         pass
-    elif text == "查看品項":
+    elif option_text == "查看品項":
         pass
-    elif text == "清理品項":
+    elif option_text == "清理品項":
         pass
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        TextSendMessage(text=f"Hi, {profile.display_name}, 你要{option_text}喔"))
 
 
 if __name__ == "__main__":
