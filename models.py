@@ -32,7 +32,7 @@ class Food(db.Model):
     def __init__(self, name, user_id, expiration_date):
         self.name = name
         self.user_id = user_id
-        self.expiration_date = datetime.strptime(expiration_date, '%Y/%m/%d').date()
+        self.expiration_date = datetime.strptime(expiration_date, '%Y-%m-%d').date()
 
     def __repr__(self):
         return '<Food %r>' % self.name
