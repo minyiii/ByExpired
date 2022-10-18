@@ -1,59 +1,77 @@
 import json
 from datetime import datetime
 
-def _get_food_json(food):
+DATE_FORMAT = '%Y-%m-%d' # Line API 是吃這個時間格式，故不選用其他格式（如：%Y/%m/%d）
+TIME_FORMAT = '%H:%M'
+
+class DatetimeConverter:
+    def __init__(self, date_format=DATE_FORMAT, time_format=TIME_FORMAT) -> None:
+        self.date_format = date_format
+        self.time_format = time_format
+        
+    def str_to_date(self, date_str):
+        return datetime.strptime(date_str, self.date_format).date()
+
+    def date_to_str(self, date_obj):
+        return date_obj.strftime(self.date_format)
+
+    def str_to_time(self, time_str):
+        return datetime.strptime(time_str, self.time_format).time()
+
+    def time_to_str(self, time_obj):
+        return time_obj.strftime(self.time_format)
+
+dt_converter = DatetimeConverter()
+
+def get_food_json(food):
     result = json.load(open('single_item.json', 'r', encoding='utf-8'))
     print(type(result))
     result['body']['contents'][0]['text'] = food.name
-    result['body']['contents'][2]['contents'][0]['contents'][1]['text'] = food.expiration_date.strftime('%Y-%m-%d') # to str
-    alarm = food.alarms[0]
-    result['body']['contents'][2]['contents'][1]['contents'][1]['text'] = f"{alarm.timing.strftime('%H:%M')} ({str(alarm.days_before)} days before)" # to str
+    result['body']['contents'][2]['contents'][0]['contents'][1]['text'] = dt_converter.date_to_str(food.expiration_date) # to str
+    if food.alarm:
+        print("Have alarm")
+        current_alarm = food.alarm
+        days_before = abs((current_alarm.end_date - current_alarm.start_date).days)
+        alarm_text = f"{dt_converter.time_to_str(current_alarm.timing)} ({str(days_before)} days before)" # to str
+    else:
+        alarm_text = "No alarm"
+        print("No alarm")
+    result['body']['contents'][2]['contents'][1]['contents'][1]['text'] = alarm_text
     return result
 
-def _get_food_jsons(food_list):
+def get_food_jsons(food_list):
     '''
     generate carousel container
     :param food_list: a list of food python objects
     '''
     result = {
-        "type": "carousel",
-        "contents": []
+        "type": "carousel"
     }
+    contents = []
     for food in food_list:
-        result["contents"].append(_get_food_json(food))
+        c = get_food_json(food)
+        print(c)
+        contents.append(c)
+    result["contents"] = contents
     return result
 
+def get_valid_text(text):
+    # ref: https://stackoverflow.com/questions/26541968/delete-every-non-utf-8-symbols-from-string
+    text = text.encode("utf-8").decode('utf-8','ignore')
+    return text
 
-def get_food_json(fake_name: str, fake_days_before: int):
-    result = json.load(open('single_item.json', 'r', encoding='utf-8'))
-    print(type(result))
-    result['body']['contents'][0]['text'] = fake_name
-    exp_date_obj = datetime.strptime("2022-10-31", '%Y-%m-%d').date()
-    alarm_timing_obj = datetime.strptime('17:00', '%H:%M').time()
-    alarm_days_before_int = fake_days_before
-    result['body']['contents'][2]['contents'][0]['contents'][1]['text'] = exp_date_obj.strftime('%Y-%m-%d')
-    result['body']['contents'][2]['contents'][1]['contents'][1]['text'] = f"{alarm_timing_obj.strftime('%H:%M')} ({str(alarm_days_before_int)} days before)"
-    return result
-
-def get_food_jsons():
-    result = {
-        "type": "carousel",
-        "contents": []
-    }
-    for i in range(3):
-        result["contents"].append(get_food_json(f"fake {i+1}", f"{i+2}"))
-    return result
-
-def get_edit_jsons(fake_food_name):
-    result = json.load(open('edit.json', 'r', encoding='utf-8'))
-    result['header']['contents'][0]['text'] = f"想改 {fake_food_name} 的什麼呢"
-    return result
-
-def _get_edit_jsons(food):
+def get_edit_jsons(food):
     result = json.load(open('edit.json', 'r', encoding='utf-8'))
     result['header']['contents'][0]['text'] = f"想改 {food.name} 的什麼呢"
-    result['body']['contents'][0]['action']['min'] = datetime.utcnow().strftime('%Y-%m-%d') # 有效期限最小僅能當天
-    result['body']['contents'][1]['action']['min'] = datetime.utcnow().strftime('%Y-%m-%d') # 開始提醒日最小僅能當天
-    result['body']['contents'][1]['action']['max'] = datetime.utcnow().strftime('%Y-%m-%d') # !!開始提醒日最大僅能有效期限當天
+
+    # 有效期限
+    result['body']['contents'][0]['action']['data'] = f"action=setExpDate&food_id={food.id}"
+    result['body']['contents'][0]['action']['min'] = dt_converter.date_to_str(datetime.utcnow().date())
+    # 開始提醒日
+    result['body']['contents'][1]['action']['data'] = f"action=setAlarmStart&alarm_id={str(food.alarm.id)}&food_id={food.id}"
+    result['body']['contents'][1]['action']['min'] = dt_converter.date_to_str(datetime.utcnow().date())
+    result['body']['contents'][1]['action']['max'] = dt_converter.date_to_str(food.expiration_date)
+    # 鬧鐘時間
+    result['body']['contents'][2]['action']['data'] = f"action=setAlarmTiming&alarm_id={str(food.alarm.id)}&food_id={food.id}"
 
     return result

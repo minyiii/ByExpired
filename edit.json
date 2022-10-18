@@ -6,7 +6,7 @@
     "contents": [
       {
         "type": "text",
-        "text": "想改 5 Eggs 的什麼呢",
+        "text": "想改 XXX 的什麼呢",
         "size": "lg",
         "weight": "bold",
         "align": "center",
@@ -25,10 +25,10 @@
         "type": "button",
         "action": {
           "type": "datetimepicker",
-          "data": "action=setExpDate&food_id=1",
+          "data": "action=setExpDate&food_id=X",
           "mode": "date",
           "label": "有效期限",
-          "min": "2022-10-16"
+          "min": "YYYY-MM-DD"
         },
         "color": "#628395"
       },
@@ -37,10 +37,10 @@
         "action": {
           "type": "datetimepicker",
           "label": "開始提醒日",
-          "data": "action=setAlarmStart&alarm_id=1",
+          "data": "action=setAlarmStart&alarm_id=X",
           "mode": "date",
-          "min": "2022-10-16",
-          "max": "2022-10-31"
+          "min": "YYYY-MM-DD",
+          "max": "YYYY-MM-DD"
         },
         "color": "#628395"
       },
@@ -49,7 +49,7 @@
         "action": {
           "type": "datetimepicker",
           "label": "鬧鐘時間",
-          "data": "action=setAlarmTiming&alarm_id=1",
+          "data": "action=setAlarmTiming&alarm_id=X",
           "mode": "time"
         },
         "color": "#628395"
