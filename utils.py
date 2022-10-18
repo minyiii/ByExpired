@@ -28,6 +28,7 @@ def get_food_json(food):
     print(type(result))
     result['body']['contents'][0]['text'] = food.name
     result['body']['contents'][2]['contents'][0]['contents'][1]['text'] = dt_converter.date_to_str(food.expiration_date) # to str
+    
     if food.alarm:
         print("Have alarm")
         current_alarm = food.alarm
@@ -37,6 +38,11 @@ def get_food_json(food):
         alarm_text = "No alarm"
         print("No alarm")
     result['body']['contents'][2]['contents'][1]['contents'][1]['text'] = alarm_text
+
+    # 下方按鈕
+    result['footer']['contents'][0]['action']['data'] = f"action=edit&food_id={food.id}"
+    result['footer']['contents'][1]['action']['data'] = f"action=finished&food_id={food.id}"
+
     return result
 
 def get_food_jsons(food_list):
@@ -68,10 +74,10 @@ def get_edit_jsons(food):
     result['body']['contents'][0]['action']['data'] = f"action=setExpDate&food_id={food.id}"
     result['body']['contents'][0]['action']['min'] = dt_converter.date_to_str(datetime.utcnow().date())
     # 開始提醒日
-    result['body']['contents'][1]['action']['data'] = f"action=setAlarmStart&alarm_id={str(food.alarm.id)}&food_id={food.id}"
+    result['body']['contents'][1]['action']['data'] = f"action=setAlarmStart&food_id={food.id}"
     result['body']['contents'][1]['action']['min'] = dt_converter.date_to_str(datetime.utcnow().date())
     result['body']['contents'][1]['action']['max'] = dt_converter.date_to_str(food.expiration_date)
     # 鬧鐘時間
-    result['body']['contents'][2]['action']['data'] = f"action=setAlarmTiming&alarm_id={str(food.alarm.id)}&food_id={food.id}"
+    result['body']['contents'][2]['action']['data'] = f"action=setAlarmTiming&food_id={food.id}"
 
     return result

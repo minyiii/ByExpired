@@ -6,6 +6,8 @@ from typing import List, Union
 def update_food_exp_date(food_id, exp_date: str):
     food =  db.session.execute(db.select(Food).filter_by(id=food_id)).scalar_one()
     food.expiration_date = dt_converter.str_to_date(exp_date)
+    if (food.alarm is not None) and (food.alarm.end_date>food.expiration_date):
+        food.alarm.end_date = food.expiration_date
 
 def add_food(name, user_id, exp_date: str):
     food = Food(name, user_id, exp_date)
@@ -57,10 +59,8 @@ def update_alarm_date(alarm_id, new_date: str, type: int):
         raise
 
 def update_alarm_timing(alarm_id, new_time:str):
-    # alarm =  db.session.execute(db.select(Alarm).filter_by(id=alarm_id)).scalar_one()
-    # alarm.timing = dt_converter.str_to_time(new_time)
-    db.session.query(Alarm).filter(Alarm.id == alarm_id).\
-        update({Alarm.timing: new_time})
+    alarm =  db.session.execute(db.select(Alarm).filter_by(id=alarm_id)).scalar_one()
+    alarm.timing = dt_converter.str_to_time(new_time)
 
 def update_alarm_status(alarm_id):
     alarm =  db.session.execute(db.select(Alarm).filter_by(id=alarm_id)).scalar_one()

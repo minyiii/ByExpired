@@ -153,7 +153,7 @@ def handle_postback(event):
     action = action.split("=")[1]
 
     if action == "edit": # OK
-        food_id = int(pb_data.split("&")[0].split("=")[1])
+        food_id = int(pb_data.split("=")[1])
         try:
             food = crud.read_food(food_id=food_id)
         except:
@@ -163,8 +163,8 @@ def handle_postback(event):
                     TextSendMessage(text="編輯食物失敗"))
         else:
             content = get_edit_jsons(food)
-            with open("test.json", "w") as outfile:
-                json.dump(content, outfile)
+            # with open("test.json", "w") as outfile:
+            #     json.dump(content, outfile)
             line_bot_api.reply_message(
                 event.reply_token,
                 FlexSendMessage(
@@ -191,15 +191,13 @@ def handle_postback(event):
                 TextSendMessage(text=text))
     elif action == "setAlarmStart": # OK
         new_start_date = event.postback.params['date']
-        alarm, food = pb_data.split("&")
-        alarm_id = int(alarm.split("=")[1])
-        food_id = int(food.split("=")[1])
+        food_id = int(pb_data.split("=")[1])
         
         try:
             food = crud.read_food(food_id)
             print(f"food.alarm: {food.alarm}")
             if food.alarm is not None:
-                crud.update_alarm_date(alarm_id, new_start_date, type=0)
+                crud.update_alarm_date(food_id.alarm.id, new_start_date, type=0)
             else:
                 crud.add_alarm(food_id, timing = "08:00", 
                     start_date = new_start_date, 
@@ -207,33 +205,16 @@ def handle_postback(event):
             db.session.commit()
         except:
             text = "鬧鐘開始提醒日修改失敗"
+            db.session.rollback()
         else:
             text = f"鬧鐘開始提醒日已改為 {new_start_date}"
         finally:
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
-        '''line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(
-                text="幾天前開始提醒？",
-                quick_reply = QuickReply(
-                    items=[
-                        QuickReplyButton(action=MessageAction(label="1", text="1 天前開始提醒")),
-                        QuickReplyButton(action=MessageAction(label="2", text="2 天前開始提醒")),
-                        QuickReplyButton(action=MessageAction(label="3", text="3 天前開始提醒")),
-                        QuickReplyButton(action=MessageAction(label="4", text="4 天前開始提醒")),
-                        QuickReplyButton(action=MessageAction(label="5", text="5 天前開始提醒")),
-                    ]
-                )
-            )
-        )'''
     elif action == "setAlarmTiming": # OK
         new_time = event.postback.params['time']
-        alarm, food = pb_data.split("&")
-        alarm_id = int(alarm.split("=")[1])
-        food_id = int(food.split("=")[1])
-        print(f"alarm_id: {alarm_id}, food_id: {food_id}")
+        food_id = int(pb_data.split("=")[1])
 
         try:
             food = crud.read_food(food_id)
@@ -241,7 +222,7 @@ def handle_postback(event):
             if food.alarm is not None:
                 print("(1) food.alarm is not None")
                 crud.update_alarm_timing(
-                    alarm_id = alarm_id, 
+                    alarm_id = food_id.alarm.id, 
                     new_time = new_time)
             else:
                 print("(2) food.alarm is None")
@@ -251,6 +232,7 @@ def handle_postback(event):
             db.session.commit()
         except:
             text = "鬧鐘提醒時間修改失敗"
+            db.session.rollback()
         else:
             text = f"鬧鐘提醒時間已改為 {new_time}"
         finally:
@@ -270,6 +252,7 @@ def handle_postback(event):
             db.session.commit()
         except:
             text = "新增食物失敗"
+            db.session.rollback()
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))

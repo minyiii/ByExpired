@@ -92,7 +92,7 @@
         "action": {
           "type": "postback",
           "label": "編輯",
-          "data": "action=edit&food_id=1&alarm_id=1"
+          "data": "action=edit&food_id=1&alarm_id=X"
         },
         "height": "md",
         "gravity": "center",
@@ -108,7 +108,7 @@
         "action": {
           "type": "postback",
           "label": "已吃完",
-          "data": "action=finished&food_id=1"
+          "data": "action=finished&food_id=X"
         },
         "height": "md",
         "gravity": "center",
