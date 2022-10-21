@@ -1,5 +1,5 @@
 from app import db
-from utils import dt_converter
+from app.utils import dt_converter
 from datetime import date, datetime, timedelta, time
 from typing import Union
 

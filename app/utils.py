@@ -1,8 +1,10 @@
+import os
 import json
 from datetime import datetime
 
 DATE_FORMAT = '%Y-%m-%d' # Line API 是吃這個時間格式，故不選用其他格式（如：%Y/%m/%d）
 TIME_FORMAT = '%H:%M'
+STATIC_FOLDER = 'app/static'
 
 class DatetimeConverter:
     def __init__(self, date_format=DATE_FORMAT, time_format=TIME_FORMAT) -> None:
@@ -24,7 +26,7 @@ class DatetimeConverter:
 dt_converter = DatetimeConverter()
 
 def get_food_json(food):
-    result = json.load(open('single_item.json', 'r', encoding='utf-8'))
+    result = json.load(open(os.path.join(STATIC_FOLDER, 'single_item.json'), 'r', encoding='utf-8'))
     print(type(result))
     result['body']['contents'][0]['text'] = food.name
     result['body']['contents'][2]['contents'][0]['contents'][1]['text'] = dt_converter.date_to_str(food.expiration_date) # to str
@@ -67,7 +69,7 @@ def get_valid_text(text):
     return text
 
 def get_edit_jsons(food):
-    result = json.load(open('edit.json', 'r', encoding='utf-8'))
+    result = json.load(open(os.path.join(STATIC_FOLDER, 'edit.json'), 'r', encoding='utf-8'))
     result['header']['contents'][0]['text'] = f"想改 {food.name} 的什麼呢"
 
     # 有效期限

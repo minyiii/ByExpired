@@ -1,24 +1,18 @@
-from datetime import datetime
 import os
 import sys
 import json
-from argparse import ArgumentParser
-from flask import Flask, request, abort
-from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from flask import request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError, LineBotApiError
 from linebot.models import (MessageEvent, PostbackEvent, TextMessage, TextSendMessage, QuickReply, QuickReplyButton, 
 MessageAction, DatetimePickerAction, FlexSendMessage, TemplateSendMessage, ConfirmTemplate, PostbackAction)
-from dotenv import load_dotenv
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
 
-load_dotenv()
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URI')
-db = SQLAlchemy(app)
-
-from models import User, Alarm, Food # must keep this to create table
-from utils import get_valid_text, dt_converter, get_food_jsons, get_edit_jsons
-import crud
+from app import app, db
+from app.utils import get_valid_text, dt_converter, get_food_jsons, get_edit_jsons
+from app import crud
 
 channel_access_token = os.getenv('CHANNEL_ACCESS_TOKEN')
 channel_secret = os.getenv('CHANNEL_SECRET')
@@ -33,7 +27,6 @@ if channel_access_token is None:
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
-
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     ''' Enable Flask to automatically remove DB sessions 
@@ -44,7 +37,6 @@ def shutdown_session(exception=None):
     db.session.remove()
 
 # 所有line傳來的事件都會經過此路徑，接著將事件傳到下方的handler做處理
-
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -85,8 +77,8 @@ def handle_message(event):
             if len(foods)!=0:
                 print(foods)
                 content = get_food_jsons(foods)
-                with open("read_food.json", "w") as outfile:
-                    json.dump(content, outfile)
+                # with open("read_food.json", "w") as outfile:
+                #     json.dump(content, outfile)
                 line_bot_api.reply_message(
                     event.reply_token,
                     FlexSendMessage(
@@ -285,17 +277,3 @@ def handle_postback(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
-
-if __name__ == "__main__":
-    arg_parser = ArgumentParser(
-        usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
-    )
-    # --- original code ---
-    # arg_parser.add_argument('-p', '--port', type=int, default=8000, help='port')
-    # arg_parser.add_argument('-d', '--debug', default=False, help='debug')
-    # options = arg_parser.parse_args()
-    # app.run(debug=options.debug, port=options.port)
-
-    # --- new code ---
-    http_port = int(os.environ.get("PORT", 8000))
-    app.run(host='0.0.0.0', port=http_port)

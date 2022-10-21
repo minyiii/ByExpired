@@ -1,6 +1,6 @@
 from app import db
-from utils import dt_converter
-from models import User, Food, Alarm
+from app.utils import dt_converter
+from app.models import User, Food, Alarm
 from typing import List, Union
 
 def update_food_exp_date(food_id, exp_date: str):
@@ -41,6 +41,18 @@ def read_unfinished_foods(user_id: str) -> Union[List, None]:
             .filter(User.id==user_id)\
             .filter(Food.is_finished==False)\
             .order_by(Food.expiration_date)
+    foods = db.session.execute(stmt).scalars().all()
+    return foods
+
+def read_unfinished_foods_with_alarm() -> Union[List, None]:
+    '''
+    get all unifished foods that have set unclosed alarm
+    '''
+    stmt = db.select(Food)\
+            .join(Alarm, Alarm.food_id==Food.id)\
+            .filter(Food.is_finished==False)\
+            .filter(Alarm.is_closed==False)\
+            .order_by(User.id, Food.expiration_date)
     foods = db.session.execute(stmt).scalars().all()
     return foods
 
