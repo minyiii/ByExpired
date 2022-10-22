@@ -1,16 +1,16 @@
+'''
+Line bot API
+'''
 import os
 import sys
-import json
 from datetime import datetime
-from flask import request, abort
+
 from linebot import LineBotApi, WebhookHandler
-from linebot.exceptions import InvalidSignatureError, LineBotApiError
+from linebot.exceptions import LineBotApiError
 from linebot.models import (MessageEvent, PostbackEvent, TextMessage, TextSendMessage, QuickReply, QuickReplyButton, 
 MessageAction, DatetimePickerAction, FlexSendMessage, TemplateSendMessage, ConfirmTemplate, PostbackAction)
-from apscheduler.schedulers.background import BackgroundScheduler
-import atexit
 
-from app import app, db
+from app import db
 from app.utils import get_valid_text, dt_converter, get_food_jsons, get_edit_jsons
 from app import crud
 
@@ -26,35 +26,6 @@ if channel_access_token is None:
 
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
-
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    ''' Enable Flask to automatically remove DB sessions 
-    at the end of the request or when the application shuts down.
-    Ref: http://flask.pocoo.org/docs/patterns/sqlalchemy/
-    '''
-    print("remove!!!!!!!!!!!")
-    db.session.remove()
-
-# 所有line傳來的事件都會經過此路徑，接著將事件傳到下方的handler做處理
-@app.route("/callback", methods=['POST'])
-def callback():
-    # get X-Line-Signature header value
-    signature = request.headers['X-Line-Signature']
-
-    # get request body as text
-    body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-
-    # handle webhook body
-    try:
-        handler.handle(body, signature)
-    except InvalidSignatureError:
-        print("Invalid signature. Please check your channel access token/channel secret.")
-        abort(400)
-
-    return 'OK'
-
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):

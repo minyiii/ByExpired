@@ -15,4 +15,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URI')
 db = SQLAlchemy(app)
 # migrate = Migrate(app, db)
 
-from app import api # ref: https://stackoverflow.com/questions/11994325/how-to-divide-flask-app-into-multiple-py-files
+from app import main # ref: https://stackoverflow.com/questions/11994325/how-to-divide-flask-app-into-multiple-py-files

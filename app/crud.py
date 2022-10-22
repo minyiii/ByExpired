@@ -1,3 +1,6 @@
+'''
+Access and operate on DB
+'''
 from app import db
 from app.utils import dt_converter
 from app.models import User, Food, Alarm
