@@ -27,7 +27,6 @@ dt_converter = DatetimeConverter()
 
 def get_food_json(food):
     result = json.load(open(os.path.join(STATIC_FOLDER, 'single_item.json'), 'r', encoding='utf-8'))
-    print(type(result))
     result['body']['contents'][0]['text'] = food.name
     result['body']['contents'][2]['contents'][0]['contents'][1]['text'] = dt_converter.date_to_str(food.expiration_date) # to str
     
@@ -58,7 +57,6 @@ def get_food_jsons(food_list):
     contents = []
     for food in food_list:
         c = get_food_json(food)
-        print(c)
         contents.append(c)
     result["contents"] = contents
     return result

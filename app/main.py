@@ -15,6 +15,7 @@ def shutdown_session(exception=None):
     print("remove!!!!!!!!!!!")
     db.session.remove()
 
+
 # 所有line傳來的事件都會經過此路徑，接著將事件傳到下方的handler做處理
 @app.route("/callback", methods=['POST'])
 def callback():

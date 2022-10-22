@@ -61,6 +61,8 @@ def handle_message(event):
                 line_bot_api.reply_message(
                     event.reply_token,
                     TextSendMessage(text="你目前沒任何食物喔"))
+        finally:
+            db.session.close()
             
     elif option_text.startswith("取消"):
         pass
@@ -135,6 +137,8 @@ def handle_postback(event):
                     contents = content
                 )
             )
+        finally:
+            db.session.close()
     elif action == "setExpDate": # OK
         new_exp_date = event.postback.params['date']
         food_id = int(pb_data.split("=")[1])
@@ -152,6 +156,7 @@ def handle_postback(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
+            db.session.close()
     elif action == "setAlarmStart": # OK
         new_start_date = event.postback.params['date']
         food_id = int(pb_data.split("=")[1])
@@ -160,8 +165,10 @@ def handle_postback(event):
             food = crud.read_food(food_id)
             print(f"food.alarm: {food.alarm}")
             if food.alarm is not None:
+                print(f"food_id.alarm.id: {food_id.alarm.id}, new_start_date: {new_start_date}")
                 crud.update_alarm_date(food_id.alarm.id, new_start_date, type=0)
             else:
+                print("根本沒鬧鐘")
                 crud.add_alarm(food_id, timing = "08:00", 
                     start_date = new_start_date, 
                     end_date = food.expiration_date)
@@ -175,6 +182,7 @@ def handle_postback(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
+            db.session.close()
     elif action == "setAlarmTiming": # OK
         new_time = event.postback.params['time']
         food_id = int(pb_data.split("=")[1])
@@ -202,6 +210,7 @@ def handle_postback(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
+            db.session.close()
 
     elif action == "addFood": # OK
         food_name = pb_data.split("=")[1]
@@ -234,6 +243,8 @@ def handle_postback(event):
                         }
                     ]
                 ))
+        finally:
+            db.session.close()
 
     elif action == "finished": # OK
         food_id = int(pb_data.split("=")[1])
@@ -242,9 +253,20 @@ def handle_postback(event):
             db.session.commit()
         except:
             text = "吃完食物失敗"
+            db.session.rollback()
         else:
             text = "已吃完！"
         finally:
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=text))
+            db.session.close()
+
+def send_alarm_message(user_id: str, food_name: str, food_exp_date):
+    try:
+        text = f"提醒！{food_name} 將在 {dt_converter.date_to_str(food_exp_date)} 過期"
+        line_bot_api.push_message(
+            user_id, 
+            TextSendMessage(text=text))
+    except LineBotApiError as e:
+        print("失敗~~~~")
