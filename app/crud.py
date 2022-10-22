@@ -55,7 +55,7 @@ def read_unfinished_foods_with_alarm() -> Union[List, None]:
             .join(Alarm, Alarm.food_id==Food.id)\
             .filter(Food.is_finished==False)\
             .filter(Alarm.is_closed==False)\
-            .order_by(User.id, Food.expiration_date)
+            .order_by(Food.user_id, Food.expiration_date)
     foods = db.session.execute(stmt).scalars().all()
     return foods
 
