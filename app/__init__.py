@@ -14,6 +14,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URI')
 app.config['SCHEDULER_API_ENABLED'] = True
 db = SQLAlchemy(app)
-# migrate = Migrate(app, db)
+migrate = Migrate(app, db)
 
 from app import main # ref: https://stackoverflow.com/questions/11994325/how-to-divide-flask-app-into-multiple-py-files
