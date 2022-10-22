@@ -3,7 +3,7 @@ Flask route
 '''
 from flask import request, abort
 from linebot.exceptions import InvalidSignatureError
-from app import app, db
+from app import app, db, Session
 from app.api import handler
 
 @app.teardown_appcontext
@@ -13,7 +13,7 @@ def shutdown_session(exception=None):
     Ref: http://flask.pocoo.org/docs/patterns/sqlalchemy/
     '''
     print("remove!!!!!!!!!!!")
-    db.session.remove()
+    Session.remove()
 
 
 # 所有line傳來的事件都會經過此路徑，接著將事件傳到下方的handler做處理

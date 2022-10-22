@@ -18,11 +18,12 @@ scheduler.init_app(app)
 scheduler.start()
 
 # @scheduler.task('cron', id='extract_foods', day='*', hour='20', minute='20', second='00')
-@scheduler.task('cron', id='extract_foods', day='*', hour='*', minute='52', second='0')
+@scheduler.task('cron', id='extract_foods', day='*', hour='00', minute='12', second='00')
 def extract_foods_job():
     '''
     extract all foods which need to be reminded and set jobs for them every day
     '''
+    print("In job!")
     with scheduler.app.app_context():
         foods = read_unfinished_foods_with_alarm()
         for food in foods:
