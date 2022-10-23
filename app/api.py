@@ -7,10 +7,10 @@ from datetime import datetime
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import LineBotApiError
-from linebot.models import (MessageEvent, PostbackEvent, TextMessage, TextSendMessage, QuickReply, QuickReplyButton, 
-MessageAction, DatetimePickerAction, FlexSendMessage, TemplateSendMessage, ConfirmTemplate, PostbackAction)
+from linebot.models import (MessageEvent, PostbackEvent, FollowEvent, TextMessage, TextSendMessage, 
+MessageAction, DatetimePickerAction, FlexSendMessage, TemplateSendMessage, ConfirmTemplate)
 
-from app import db, Session
+from app import Session
 from app.utils import get_valid_text, dt_converter, get_food_jsons, get_edit_jsons, parse_data
 from app import crud
 
@@ -54,8 +54,6 @@ def handle_postback(event):
     reply_token = event.reply_token
     pb_data = parse_data(event.postback.data)
     action = pb_data['action']
-    # action, pb_data = event.postback.data.split("&", 1)
-    # action = action.split("=")[1]
 
     if action == "edit":
         food_id = int(pb_data['food_id'])
@@ -63,7 +61,6 @@ def handle_postback(event):
     elif action == "setExpDate":
         new_exp_date = event.postback.params['date']
         food_id = int(pb_data['food_id'])
-        # food_id = int(pb_data.split("=")[1])
         edit_food_exp_date(food_id, new_exp_date, reply_token)
     elif action == "setAlarmStart": 
         new_start_date = event.postback.params['date']
@@ -80,6 +77,19 @@ def handle_postback(event):
     elif action == "finished":
         food_id = int(pb_data['food_id'])
         finish_food(food_id, reply_token)
+
+@handler.add(FollowEvent)
+def handle_follow(event):
+    try:
+        user_id = event.source.user_id
+        reply_token = event.reply_token
+        profile = line_bot_api.get_profile(user_id)
+    except LineBotApiError as e:
+        print("No profile.")
+
+    user_name = profile.display_name
+    add_user(user_id, user_name, reply_token)
+    
 
 def send_alarm_message(user_id: str, food_name: str, food_exp_date):
     try:
@@ -295,4 +305,37 @@ def finish_food(food_id, reply_token):
             line_bot_api.reply_message(
                 reply_token,
                 TextSendMessage(text=text))
+            session.close()
+
+def add_user(user_id, user_name, reply_token):
+    with Session() as session:
+        try:
+            crud.create_user(
+                id = user_id,
+                name = user_name,
+                session = session)
+            session.commit()
+        except Exception as e:
+            print(e)
+            text = "新增用戶失敗"
+            session.rollback()
+            line_bot_api.reply_message(
+                reply_token,
+                TextSendMessage(text=text))
+        else:
+            text = f"感謝將 ByExpired 新增為好友，可點選下方選單查看使用教學喔"
+
+            line_bot_api.reply_message(
+                reply_token,
+                TextSendMessage(
+                    text=f"{text} $",
+                    emojis = [
+                        {
+                            "index": len(text)+1,
+                            "productId": "5ac1de17040ab15980c9b438",
+                            "emojiId": "001"
+                        }
+                    ]
+                ))
+        finally:
             session.close()
