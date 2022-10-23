@@ -81,3 +81,16 @@ def get_edit_jsons(food):
     result['body']['contents'][2]['action']['data'] = f"action=setAlarmTiming&food_id={food.id}"
 
     return result
+
+def parse_data(data_str):
+    '''
+    :params data_str: post back data
+    e.g., action=addFood&food_id=5&name=bacon
+    '''
+    results = {}
+    data_list =  data_str.split("&")
+    for data in data_list:
+        key, value = data.split("=")
+        results[key] = value
+
+    return results
