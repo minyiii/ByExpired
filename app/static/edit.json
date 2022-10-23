@@ -1,0 +1,59 @@
+{
+  "type": "bubble",
+  "header": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "想改 XXX 的什麼呢",
+        "size": "lg",
+        "weight": "bold",
+        "align": "center",
+        "gravity": "center",
+        "color": "#FFFFFF"
+      }
+    ],
+    "backgroundColor": "#628395",
+    "margin": "none"
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "button",
+        "action": {
+          "type": "datetimepicker",
+          "data": "action=setExpDate&food_id=X",
+          "mode": "date",
+          "label": "有效期限",
+          "min": "YYYY-MM-DD"
+        },
+        "color": "#628395"
+      },
+      {
+        "type": "button",
+        "action": {
+          "type": "datetimepicker",
+          "label": "開始提醒日",
+          "data": "action=setAlarmStart&alarm_id=X",
+          "mode": "date",
+          "min": "YYYY-MM-DD",
+          "max": "YYYY-MM-DD"
+        },
+        "color": "#628395"
+      },
+      {
+        "type": "button",
+        "action": {
+          "type": "datetimepicker",
+          "label": "鬧鐘時間",
+          "data": "action=setAlarmTiming&alarm_id=X",
+          "mode": "time"
+        },
+        "color": "#628395"
+      }
+    ]
+  }
+}

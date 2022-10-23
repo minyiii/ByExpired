@@ -1,0 +1,247 @@
+{
+  "type": "carousel",
+  "contents": [
+    {
+      "type": "bubble",
+      "size": "kilo",
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "md",
+        "contents": [
+          {
+            "type": "text",
+            "text": "5 Eggs",
+            "size": "xl",
+            "weight": "bold",
+            "margin": "none",
+            "align": "center",
+            "gravity": "center",
+            "color": "#FFFFFF"
+          },
+          {
+            "type": "separator",
+            "color": "#FFFFFF"
+          },
+          {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "Expiration Date",
+                    "style": "italic",
+                    "decoration": "underline",
+                    "color": "#F4F1DE",
+                    "align": "center",
+                    "size": "xs",
+                    "margin": "none"
+                  },
+                  {
+                    "type": "text",
+                    "text": "2022/10/31",
+                    "color": "#FFFFFF",
+                    "weight": "bold",
+                    "style": "normal",
+                    "align": "center",
+                    "margin": "md"
+                  }
+                ]
+              },
+              {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "Alarm",
+                    "style": "italic",
+                    "decoration": "underline",
+                    "color": "#F4F1DE",
+                    "align": "center",
+                    "size": "xs",
+                    "margin": "none"
+                  },
+                  {
+                    "type": "text",
+                    "text": "10:00 (3 days before)",
+                    "color": "#FFFFFF",
+                    "weight": "bold",
+                    "style": "normal",
+                    "align": "center",
+                    "margin": "md"
+                  }
+                ],
+                "margin": "lg"
+              }
+            ]
+          }
+        ],
+        "backgroundColor": "#628395"
+      },
+      "footer": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+          {
+            "type": "button",
+            "style": "primary",
+            "color": "#628395",
+            "margin": "none",
+            "action": {
+              "type": "postback",
+              "label": "調整鬧鐘",
+              "data": "alarm_id=1"
+            },
+            "height": "md",
+            "gravity": "center",
+            "offsetTop": "none",
+            "offsetStart": "none",
+            "offsetEnd": "none"
+          },
+          {
+            "type": "button",
+            "style": "primary",
+            "color": "#628395",
+            "margin": "xl",
+            "action": {
+              "type": "postback",
+              "label": "已吃完",
+              "data": "food_id=1"
+            },
+            "height": "md",
+            "gravity": "center",
+            "offsetEnd": "none"
+          }
+        ],
+        "margin": "sm",
+        "alignItems": "center"
+      }
+    },
+    {
+      "type": "bubble",
+      "size": "kilo",
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "spacing": "md",
+        "contents": [
+          {
+            "type": "text",
+            "text": "5 Eggs",
+            "size": "xl",
+            "weight": "bold",
+            "margin": "none",
+            "align": "center",
+            "gravity": "center",
+            "color": "#FFFFFF"
+          },
+          {
+            "type": "separator",
+            "color": "#FFFFFF"
+          },
+          {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "Expiration Date",
+                    "style": "italic",
+                    "decoration": "underline",
+                    "color": "#F4F1DE",
+                    "align": "center",
+                    "size": "xs",
+                    "margin": "none"
+                  },
+                  {
+                    "type": "text",
+                    "text": "2022/10/31",
+                    "color": "#FFFFFF",
+                    "weight": "bold",
+                    "style": "normal",
+                    "align": "center",
+                    "margin": "md"
+                  }
+                ]
+              },
+              {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "Alarm",
+                    "style": "italic",
+                    "decoration": "underline",
+                    "color": "#F4F1DE",
+                    "align": "center",
+                    "size": "xs",
+                    "margin": "none"
+                  },
+                  {
+                    "type": "text",
+                    "text": "10:00 (3 days before)",
+                    "color": "#FFFFFF",
+                    "weight": "bold",
+                    "style": "normal",
+                    "align": "center",
+                    "margin": "md"
+                  }
+                ],
+                "margin": "lg"
+              }
+            ]
+          }
+        ],
+        "backgroundColor": "#628395"
+      },
+      "footer": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+          {
+            "type": "button",
+            "style": "primary",
+            "color": "#628395",
+            "margin": "none",
+            "action": {
+              "type": "postback",
+              "label": "調整鬧鐘",
+              "data": "alarm_id=1"
+            },
+            "height": "md",
+            "gravity": "center",
+            "offsetTop": "none",
+            "offsetStart": "none",
+            "offsetEnd": "none"
+          },
+          {
+            "type": "button",
+            "style": "primary",
+            "color": "#628395",
+            "margin": "xl",
+            "action": {
+              "type": "postback",
+              "label": "已吃完",
+              "data": "food_id=1"
+            },
+            "height": "md",
+            "gravity": "center",
+            "offsetEnd": "none"
+          }
+        ],
+        "margin": "sm",
+        "alignItems": "center"
+      }
+    }
+  ]
+}
