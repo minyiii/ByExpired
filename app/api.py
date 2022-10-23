@@ -2,7 +2,6 @@
 Line bot API
 '''
 import os
-from random import seed
 import sys
 from datetime import datetime
 
@@ -10,7 +9,6 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import LineBotApiError
 from linebot.models import (MessageEvent, PostbackEvent, TextMessage, TextSendMessage, QuickReply, QuickReplyButton, 
 MessageAction, DatetimePickerAction, FlexSendMessage, TemplateSendMessage, ConfirmTemplate, PostbackAction)
-from requests import session
 
 from app import db, Session
 from app.utils import get_valid_text, dt_converter, get_food_jsons, get_edit_jsons
