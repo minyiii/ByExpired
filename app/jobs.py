@@ -2,7 +2,7 @@ from app import scheduler, Session
 from app.crud import read_unfinished_foods_with_alarm
 from app.api import send_alarm_message
 
-@scheduler.task('cron', id='extract_foods', hour='12', minute='8')
+@scheduler.task('cron', id='extract_foods', hour='12', minute='40')
 def extract_foods_job():
     '''
     extract all foods which need to be reminded and set jobs for them every day
@@ -36,3 +36,9 @@ def extract_foods_job():
                     print(result)
             finally:
                 session.close()
+
+
+# @scheduler.task('interval', id='get_pending_jobs', minutes=1)
+# def get_pending_jobs():
+#     jobs = scheduler.get_jobs()
+#     print(jobs)
