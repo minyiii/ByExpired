@@ -12,15 +12,15 @@ def update_food_exp_date(food_id, exp_date: str, session):
     if (food.alarm is not None) and (food.alarm.end_date>food.expiration_date):
         food.alarm.end_date = food.expiration_date
 
-def add_user(id, name, session):
+def create_user(id, name, session):
     user = User(id, name)
     session.add(user)
 
-def add_food(name, user_id, exp_date: str, session):
+def create_food(name, user_id, exp_date: str, session):
     food = Food(name, user_id, exp_date)
     session.add(food)
 
-def add_alarm(food_id, timing: str, start_date: str, end_date: str, session):
+def create_alarm(food_id, timing: str, start_date: str, end_date: str, session):
     food = Alarm(start_date, end_date, timing, food_id)
     session.add(food)
 
