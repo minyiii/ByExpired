@@ -3,7 +3,7 @@ Flask route
 '''
 from flask import request, abort
 from linebot.exceptions import InvalidSignatureError
-from app import app, db, Session
+from app import app, Session
 from app.api import handler
 
 @app.teardown_appcontext

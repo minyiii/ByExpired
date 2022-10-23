@@ -7,10 +7,10 @@ from datetime import datetime
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import LineBotApiError
-from linebot.models import (MessageEvent, PostbackEvent, TextMessage, TextSendMessage, QuickReply, QuickReplyButton, 
-MessageAction, DatetimePickerAction, FlexSendMessage, TemplateSendMessage, ConfirmTemplate, PostbackAction)
+from linebot.models import (MessageEvent, PostbackEvent, TextMessage, TextSendMessage, 
+MessageAction, DatetimePickerAction, FlexSendMessage, TemplateSendMessage, ConfirmTemplate)
 
-from app import db, Session
+from app import Session
 from app.utils import get_valid_text, dt_converter, get_food_jsons, get_edit_jsons, parse_data
 from app import crud
 
@@ -54,8 +54,6 @@ def handle_postback(event):
     reply_token = event.reply_token
     pb_data = parse_data(event.postback.data)
     action = pb_data['action']
-    # action, pb_data = event.postback.data.split("&", 1)
-    # action = action.split("=")[1]
 
     if action == "edit":
         food_id = int(pb_data['food_id'])
@@ -63,7 +61,6 @@ def handle_postback(event):
     elif action == "setExpDate":
         new_exp_date = event.postback.params['date']
         food_id = int(pb_data['food_id'])
-        # food_id = int(pb_data.split("=")[1])
         edit_food_exp_date(food_id, new_exp_date, reply_token)
     elif action == "setAlarmStart": 
         new_start_date = event.postback.params['date']
