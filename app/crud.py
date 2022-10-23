@@ -12,6 +12,10 @@ def update_food_exp_date(food_id, exp_date: str, session):
     if (food.alarm is not None) and (food.alarm.end_date>food.expiration_date):
         food.alarm.end_date = food.expiration_date
 
+def add_user(id, name, session):
+    user = User(id, name)
+    session.add(user)
+
 def add_food(name, user_id, exp_date: str, session):
     food = Food(name, user_id, exp_date)
     session.add(food)
@@ -28,6 +32,10 @@ def update_food_status(food_id, session):
     food.is_finished = True
     if food.alarm is not None:
         food.alarm.is_closed = True
+
+def read_user(user_id: str, session):
+    user =  session.execute(db.select(User).filter_by(id=user_id)).scalar_one()
+    return user
 
 def read_food(food_id: int, session) -> Union[Food, None]:
     food =  session.execute(db.select(Food).filter_by(id=food_id)).scalar_one()
